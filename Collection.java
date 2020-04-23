@@ -226,7 +226,7 @@ public class Collection {
         try {
             Key = Integer.valueOf(string);
         } catch (NumberFormatException E) {
-            System.out.println("Input arg of key is incorrect. Try again");
+            System.out.println("Input arg of key is incorrect.It must be Integer value. Try again");
             while (Key==null) {
                 System.out.println("Key:");
                 try{Key=Integer.valueOf(scanner.next());} catch (NumberFormatException e) {

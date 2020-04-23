@@ -18,21 +18,30 @@ public class FileWork  {
      * @param map
      * @param collection
      */
-    public static void ScriptReader(String string, HistoryList historyList, LinkedHashMap<Integer,Vehicle> map,Collection collection) {
-        File file1=new File(string);
-        try {
-            Scanner scan = new Scanner(file1);
-            Commander C=new Commander();
-            while (scan.hasNextLine()){
-                C.go(scan,historyList,map,collection);
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            System.err.println(e);
-            System.out.println("Try again");
+    private static ArrayList<String> files=new ArrayList<String>();
 
+    public static void ScriptReader(String string, HistoryList historyList, LinkedHashMap<Integer,Vehicle> map,Collection collection) {
+        if(files.contains(string)==false) {
+            files.add(string);
+            File file1 = new File(string);
+            try {
+                Scanner scan = new Scanner(file1);
+                Commander C = new Commander();
+                while (scan.hasNextLine()) {
+                    C.go(scan, historyList, map, collection);
+                }
+                scan.close();
+            } catch (FileNotFoundException e) {
+                System.err.println(e);
+                System.out.println("Try again");
+
+            }
+            historyList.insert("Execute_script");
         }
-        historyList.insert("Execute_script");
+        else{
+            System.out.println("The file specified in the execute method is already used, you cannot use it again");
+        }
+        files.clear();
 
     }
 
@@ -105,26 +114,30 @@ public class FileWork  {
      */
     public static void FileWriter(LinkedHashMap<Integer,Vehicle> map,HistoryList historyList ){
         try (PrintWriter printWriter = new PrintWriter(FileWork.Filewithcollection)) {
-            printWriter.printf("<%s> %n","Collection");
-            Set set = map.entrySet();
-            Iterator<LinkedHashMap<Integer,Vehicle>> iterator = set.iterator();
-            while (iterator.hasNext()) {
-                Map.Entry item = (Map.Entry) iterator.next();
-                printWriter.printf(" <Key> %s </Key> %n", item.getKey());
-                printWriter.printf("  <%s> %n","Vehicle");
-                printWriter.printf("   <Id> %s </Id> %n", map.get(item.getKey()).getId());
-                printWriter.printf("   <Name> %s </Name> %n", map.get(item.getKey()).getName());
-                printWriter.printf("   <Coordinate_x> %s </Coordinates_x> %n", map.get(item.getKey()).c.getX());
-                printWriter.printf("   <Coordinate_y> %s </Coordinates_y> %n", map.get(item.getKey()).c.getY());
-                printWriter.printf("   <creationDate> %s </creationDate> %n", map.get(item.getKey()).getCreationDate());
-                printWriter.printf("   <enginePower> %s </enginePower> %n", map.get(item.getKey()).getEnginePower());
-                printWriter.printf("   <numberOfWheels> %s </numberOfWheels> %n", map.get(item.getKey()).getNumberOfWheels());
-                printWriter.printf("   <type> %s </type> %n", map.get(item.getKey()).getType());
-                printWriter.printf("   <fuelType> %s </fuelType> %n", map.get(item.getKey()).getFuelType());
-                printWriter.printf("  <%s> %n","/Vehicle");
+            if(FileWork.Filewithcollection.canWrite()==true) {
+                printWriter.printf("<%s> %n", "Collection");
+                Set set = map.entrySet();
+                Iterator<LinkedHashMap<Integer, Vehicle>> iterator = set.iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry item = (Map.Entry) iterator.next();
+                    printWriter.printf(" <Key> %s </Key> %n", item.getKey());
+                    printWriter.printf("  <%s> %n", "Vehicle");
+                    printWriter.printf("   <Id> %s </Id> %n", map.get(item.getKey()).getId());
+                    printWriter.printf("   <Name> %s </Name> %n", map.get(item.getKey()).getName());
+                    printWriter.printf("   <Coordinate_x> %s </Coordinates_x> %n", map.get(item.getKey()).c.getX());
+                    printWriter.printf("   <Coordinate_y> %s </Coordinates_y> %n", map.get(item.getKey()).c.getY());
+                    printWriter.printf("   <creationDate> %s </creationDate> %n", map.get(item.getKey()).getCreationDate());
+                    printWriter.printf("   <enginePower> %s </enginePower> %n", map.get(item.getKey()).getEnginePower());
+                    printWriter.printf("   <numberOfWheels> %s </numberOfWheels> %n", map.get(item.getKey()).getNumberOfWheels());
+                    printWriter.printf("   <type> %s </type> %n", map.get(item.getKey()).getType());
+                    printWriter.printf("   <fuelType> %s </fuelType> %n", map.get(item.getKey()).getFuelType());
+                    printWriter.printf("  <%s> %n", "/Vehicle");
+                }
+                printWriter.printf("<%s>", "/Collection");
+                printWriter.close();
+            } else {
+                System.out.println("Access Error: You cannot write values to this file");
             }
-            printWriter.printf("<%s>", "/Collection");
-            printWriter.close();
         } catch (Exception e){
             e.getMessage();
         }
